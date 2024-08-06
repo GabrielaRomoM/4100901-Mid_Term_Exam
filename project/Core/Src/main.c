@@ -74,6 +74,15 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 			left_on = 0;
 			left_toggles = 0;
 	}
+
+	//turn right button settings
+	if (GPIO_Pin == B2_Pin) {
+		right_on = 1 ;
+		right_toggles = 6; // Blink 3 times
+		} else if (GPIO_Pin == B1_Pin) {
+			right_on = 0;
+			right_toggles = 0;
+	}
 }
 
 void turn_signal_left(void)
@@ -89,6 +98,21 @@ void turn_signal_left(void)
 		}
 
 	}
+}
+
+void turn_signal_right(void)
+	{
+		static uint32_t turn_toggle_tick = 0;
+		if (turn_toggle_tick < HAL_GetTick()) {
+			if (right_toggles > 0) {
+				turn_toggle_tick = HAL_GetTick() + 1000; //time of blinking
+				HAL_GPIO_TogglePin(LR_GPIO_Port, LR_Pin);
+				right_toggles--;
+			} else {
+				HAL_GPIO_WritePin(LR_GPIO_Port, LR_Pin, 1);
+			}
+
+		}
 }
 /* USER CODE END 0 */
 
@@ -134,9 +158,21 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	  if (left_on == 1){
-		  HAL_UART_Transmit(&huart2, "Left Turn Signal On\r\n", 21, 30);
+		  HAL_UART_Transmit(&huart2,"Left Turn Signal On\r\n", 21, 50);
 	      turn_signal_left();
-	  }
+	   }else if (left_on == 0){
+		  left_toggles = 0;
+		  }
+
+	  if (right_on == 1){
+		  HAL_UART_Transmit(&huart2,"Right Turn Signal On\r\n", 22, 50);
+		  turn_signal_right();
+	   }else if (right_on == 0){
+     	  right_toggles = 0;
+      }
+
+
+
   }
   /* USER CODE END 3 */
 }
