@@ -196,6 +196,7 @@ int main(void)
      	  right_toggles = 0;
       }
 
+	 // #3
 
   }
   /* USER CODE END 3 */
