@@ -7,23 +7,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
   1 .text         00003200  08000188  08000188  00001188  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .rodata       000000a4  08003388  08003388  00004388  2**2
+  2 .rodata       000000ac  08003388  08003388  00004388  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  3 .ARM.extab    00000000  0800342c  0800342c  0000500c  2**0
+  3 .ARM.extab    00000000  08003434  08003434  0000500c  2**0
                   CONTENTS
-  4 .ARM          00000008  0800342c  0800342c  0000442c  2**2
+  4 .ARM          00000008  08003434  08003434  00004434  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  5 .preinit_array 00000000  08003434  08003434  0000500c  2**0
+  5 .preinit_array 00000000  0800343c  0800343c  0000500c  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  6 .init_array   00000004  08003434  08003434  00004434  2**2
+  6 .init_array   00000004  0800343c  0800343c  0000443c  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  7 .fini_array   00000004  08003438  08003438  00004438  2**2
+  7 .fini_array   00000004  08003440  08003440  00004440  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  8 .data         0000000c  20000000  0800343c  00005000  2**2
+  8 .data         0000000c  20000000  08003444  00005000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  9 .bss          000000c8  2000000c  08003448  0000500c  2**2
+  9 .bss          000000c8  2000000c  08003450  0000500c  2**2
                   ALLOC
- 10 ._user_heap_stack 00000604  200000d4  08003448  000050d4  2**0
+ 10 ._user_heap_stack 00000604  200000d4  08003450  000050d4  2**0
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  0000500c  2**0
                   CONTENTS, READONLY
@@ -612,11 +612,11 @@ int main(void)
  8000638:	f000 f8da 	bl	80007f0 <MX_GPIO_Init>
   MX_USART2_UART_Init();
  800063c:	f000 f8a8 	bl	8000790 <MX_USART2_UART_Init>
-  while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  // code to do work the function called + the messages to send to the UART (for left signal)
 	  if (left_on == 1){
  8000640:	4b27      	ldr	r3, [pc, #156]	@ (80006e0 <main+0xb4>)
  8000642:	681b      	ldr	r3, [r3, #0]
@@ -636,17 +636,17 @@ int main(void)
  800065c:	f06f 427f 	mvn.w	r2, #4278190080	@ 0xff000000
  8000660:	4293      	cmp	r3, r2
  8000662:	d106      	bne.n	8000672 <main+0x46>
-			  HAL_UART_Transmit(&huart2,"Blinking infinitely\r\n", 21, 50);
+			  HAL_UART_Transmit(&huart2,"Led Blinking infinitely\r\n", 25, 50);
  8000664:	2332      	movs	r3, #50	@ 0x32
- 8000666:	2215      	movs	r2, #21
+ 8000666:	2219      	movs	r2, #25
  8000668:	4921      	ldr	r1, [pc, #132]	@ (80006f0 <main+0xc4>)
  800066a:	481f      	ldr	r0, [pc, #124]	@ (80006e8 <main+0xbc>)
  800066c:	f002 f8f6 	bl	800285c <HAL_UART_Transmit>
  8000670:	e00d      	b.n	800068e <main+0x62>
 		  } else{
-			  HAL_UART_Transmit(&huart2,"Blinking 3 times\r\n", 17, 50);
+			  HAL_UART_Transmit(&huart2,"Led Blinking 3 times\r\n", 21, 50);
  8000672:	2332      	movs	r3, #50	@ 0x32
- 8000674:	2211      	movs	r2, #17
+ 8000674:	2215      	movs	r2, #21
  8000676:	491f      	ldr	r1, [pc, #124]	@ (80006f4 <main+0xc8>)
  8000678:	481b      	ldr	r0, [pc, #108]	@ (80006e8 <main+0xbc>)
  800067a:	f002 f8ef 	bl	800285c <HAL_UART_Transmit>
@@ -662,7 +662,7 @@ int main(void)
  800068a:	2200      	movs	r2, #0
  800068c:	601a      	str	r2, [r3, #0]
 		  }
-
+	  // code to do work the function called + the messages to send to the UART (for left signal)
 	  if (right_on == 1){
  800068e:	4b1a      	ldr	r3, [pc, #104]	@ (80006f8 <main+0xcc>)
  8000690:	681b      	ldr	r3, [r3, #0]
@@ -682,17 +682,17 @@ int main(void)
  80006aa:	f06f 427f 	mvn.w	r2, #4278190080	@ 0xff000000
  80006ae:	4293      	cmp	r3, r2
  80006b0:	d106      	bne.n	80006c0 <main+0x94>
-			  HAL_UART_Transmit(&huart2,"Blinking infinitely\r\n",21,50);
+			  HAL_UART_Transmit(&huart2,"Led Blinking infinitely\r\n",25,50);
  80006b2:	2332      	movs	r3, #50	@ 0x32
- 80006b4:	2215      	movs	r2, #21
+ 80006b4:	2219      	movs	r2, #25
  80006b6:	490e      	ldr	r1, [pc, #56]	@ (80006f0 <main+0xc4>)
  80006b8:	480b      	ldr	r0, [pc, #44]	@ (80006e8 <main+0xbc>)
  80006ba:	f002 f8cf 	bl	800285c <HAL_UART_Transmit>
  80006be:	e7bf      	b.n	8000640 <main+0x14>
 		  } else{
-			  HAL_UART_Transmit(&huart2,"Blinking 3 times\r\n",17,50);
+			  HAL_UART_Transmit(&huart2,"Led Blinking 3 times\r\n",21,50);
  80006c0:	2332      	movs	r3, #50	@ 0x32
- 80006c2:	2211      	movs	r2, #17
+ 80006c2:	2215      	movs	r2, #21
  80006c4:	490b      	ldr	r1, [pc, #44]	@ (80006f4 <main+0xc8>)
  80006c6:	4808      	ldr	r0, [pc, #32]	@ (80006e8 <main+0xbc>)
  80006c8:	f002 f8c8 	bl	800285c <HAL_UART_Transmit>
@@ -715,9 +715,9 @@ int main(void)
  80006e8:	20000028 	.word	0x20000028
  80006ec:	200000b0 	.word	0x200000b0
  80006f0:	080033a0 	.word	0x080033a0
- 80006f4:	080033b8 	.word	0x080033b8
+ 80006f4:	080033bc 	.word	0x080033bc
  80006f8:	200000bc 	.word	0x200000bc
- 80006fc:	080033cc 	.word	0x080033cc
+ 80006fc:	080033d4 	.word	0x080033d4
  8000700:	200000b4 	.word	0x200000b4
 
 08000704 <SystemClock_Config>:
@@ -1522,7 +1522,7 @@ LoopForever:
   ldr r1, =_edata
  8000a78:	2000000c 	.word	0x2000000c
   ldr r2, =_sidata
- 8000a7c:	0800343c 	.word	0x0800343c
+ 8000a7c:	08003444 	.word	0x08003444
   ldr r2, =_sbss
  8000a80:	2000000c 	.word	0x2000000c
   ldr r4, =_ebss
@@ -3318,7 +3318,7 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *RCC_OscInitStruct)
  80014b4:	e014      	b.n	80014e0 <HAL_RCC_OscConfig+0x298>
  80014b6:	bf00      	nop
  80014b8:	40021000 	.word	0x40021000
- 80014bc:	080033e4 	.word	0x080033e4
+ 80014bc:	080033ec 	.word	0x080033ec
  80014c0:	20000000 	.word	0x20000000
  80014c4:	20000004 	.word	0x20000004
  80014c8:	4ba0      	ldr	r3, [pc, #640]	@ (800174c <HAL_RCC_OscConfig+0x504>)
@@ -4623,7 +4623,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(RCC_ClkInitTypeDef  *RCC_ClkInitStruct, ui
  8001bea:	bd80      	pop	{r7, pc}
  8001bec:	40022000 	.word	0x40022000
  8001bf0:	40021000 	.word	0x40021000
- 8001bf4:	080033e4 	.word	0x080033e4
+ 8001bf4:	080033ec 	.word	0x080033ec
  8001bf8:	20000000 	.word	0x20000000
  8001bfc:	20000004 	.word	0x20000004
 
@@ -4828,7 +4828,7 @@ uint32_t HAL_RCC_GetSysClockFreq(void)
  8001d04:	4770      	bx	lr
  8001d06:	bf00      	nop
  8001d08:	40021000 	.word	0x40021000
- 8001d0c:	080033fc 	.word	0x080033fc
+ 8001d0c:	08003404 	.word	0x08003404
  8001d10:	00f42400 	.word	0x00f42400
  8001d14:	007a1200 	.word	0x007a1200
 
@@ -4877,7 +4877,7 @@ uint32_t HAL_RCC_GetPCLK1Freq(void)
  8001d50:	4618      	mov	r0, r3
  8001d52:	bd80      	pop	{r7, pc}
  8001d54:	40021000 	.word	0x40021000
- 8001d58:	080033f4 	.word	0x080033f4
+ 8001d58:	080033fc 	.word	0x080033fc
 
 08001d5c <HAL_RCC_GetPCLK2Freq>:
   * @note   Each time PCLK2 changes, this function must be called to update the
@@ -4904,7 +4904,7 @@ uint32_t HAL_RCC_GetPCLK2Freq(void)
  8001d7c:	4618      	mov	r0, r3
  8001d7e:	bd80      	pop	{r7, pc}
  8001d80:	40021000 	.word	0x40021000
- 8001d84:	080033f4 	.word	0x080033f4
+ 8001d84:	080033fc 	.word	0x080033fc
 
 08001d88 <RCC_SetFlashLatencyFromMSIRange>:
             voltage range.
@@ -8696,10 +8696,10 @@ static void UART_EndRxTransfer(UART_HandleTypeDef *huart)
  800335a:	4798      	blx	r3
  800335c:	3601      	adds	r6, #1
  800335e:	e7f2      	b.n	8003346 <__libc_init_array+0x1e>
- 8003360:	08003434 	.word	0x08003434
- 8003364:	08003434 	.word	0x08003434
- 8003368:	08003434 	.word	0x08003434
- 800336c:	08003438 	.word	0x08003438
+ 8003360:	0800343c 	.word	0x0800343c
+ 8003364:	0800343c 	.word	0x0800343c
+ 8003368:	0800343c 	.word	0x0800343c
+ 800336c:	08003440 	.word	0x08003440
 
 08003370 <_init>:
  8003370:	b5f8      	push	{r3, r4, r5, r6, r7, lr}

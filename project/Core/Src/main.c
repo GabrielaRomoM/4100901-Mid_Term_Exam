@@ -171,30 +171,30 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  // code to do work the function called + the messages to send to the UART (for left signal)
 	  if (left_on == 1){
 		  HAL_UART_Transmit(&huart2,"Left Turn Signal On\r\n", 21, 50);
 	      turn_signal_left();
 		  if (left_toggles == 0xFFFFFF){
-			  HAL_UART_Transmit(&huart2,"Blinking infinitely\r\n", 21, 50);
+			  HAL_UART_Transmit(&huart2,"Led Blinking infinitely\r\n", 25, 50);
 		  } else{
-			  HAL_UART_Transmit(&huart2,"Blinking 3 times\r\n", 17, 50);
+			  HAL_UART_Transmit(&huart2,"Led Blinking 3 times\r\n", 21, 50);
 		  }
 	   } else if (left_on == 0){
 		  left_toggles = 0;
 		  }
-
+	  // code to do work the function called + the messages to send to the UART (for left signal)
 	  if (right_on == 1){
 		  HAL_UART_Transmit(&huart2,"Right Turn Signal On\r\n", 22, 50);
 		  turn_signal_right();
 		  if (right_toggles == 0xFFFFFF){
-			  HAL_UART_Transmit(&huart2,"Blinking infinitely\r\n",21,50);
+			  HAL_UART_Transmit(&huart2,"Led Blinking infinitely\r\n",25,50);
 		  } else{
-			  HAL_UART_Transmit(&huart2,"Blinking 3 times\r\n",17,50);
+			  HAL_UART_Transmit(&huart2,"Led Blinking 3 times\r\n",21,50);
 		  }
 	   } else if (right_on == 0){
      	  right_toggles = 0;
       }
-
 
 
   }
