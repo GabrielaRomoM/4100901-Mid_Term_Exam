@@ -69,11 +69,17 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	//turn left button settings
 	if (GPIO_Pin == B1_Pin) {
 		left_on = 1 ;
-		left_toggles = 6; // Blink 3 times
+		if (HAL_GetTick() < (left_last_press_tick + 500)) { // if last press was in the last 500ms
+			left_toggles = 0xFFFFFF; // a long time toggling (infinite)
+		}else{
+			left_toggles = 6; // Blink 3 times
+		}
+		left_last_press_tick = HAL_GetTick();
+		// for deactivate left button if it's active
 		} else if (GPIO_Pin == B2_Pin) {
 			left_on = 0;
 			left_toggles = 0;
-	}
+	    }
 
 	//turn right button settings
 	if (GPIO_Pin == B2_Pin) {
@@ -160,6 +166,11 @@ int main(void)
 	  if (left_on == 1){
 		  HAL_UART_Transmit(&huart2,"Left Turn Signal On\r\n", 21, 50);
 	      turn_signal_left();
+		  if (left_toggles == 0xFFFFFF){
+			  HAL_UART_Transmit(&huart2,"Blinking infinitely\r\n", 21, 50);
+		  } else{
+			  HAL_UART_Transmit(&huart2,"Blinking 3 times\r\n", 17, 50);
+		  }
 	   }else if (left_on == 0){
 		  left_toggles = 0;
 		  }
