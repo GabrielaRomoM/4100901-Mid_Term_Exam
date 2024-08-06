@@ -71,7 +71,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 		left_on = 1 ;
 		if (HAL_GetTick() < (left_last_press_tick + 500)) { // if last press was in the last 500ms
 			left_toggles = 0xFFFFFF; // a long time toggling (infinite)
-		}else{
+		} else{
 			left_toggles = 6; // Blink 3 times
 		}
 		left_last_press_tick = HAL_GetTick();
@@ -84,19 +84,26 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	//turn right button settings
 	if (GPIO_Pin == B2_Pin) {
 		right_on = 1 ;
-		right_toggles = 6; // Blink 3 times
+		if(HAL_GetTick() < (right_last_press_tick + 500)){ // if last press was in the last 500ms
+			right_toggles = 0xFFFFFF; // a long time toggling (infinite)
+		}else{
+			right_toggles = 6; // Blink 3 times
+		}
+		right_last_press_tick = HAL_GetTick();
+		// for deactivate right button if it´s active
 		} else if (GPIO_Pin == B1_Pin) {
 			right_on = 0;
 			right_toggles = 0;
 	}
 }
 
+// //LED setting for left turn signal (time and function depending on conditions)
 void turn_signal_left(void)
 {
 	static uint32_t turn_toggle_tick = 0;
 	if (turn_toggle_tick < HAL_GetTick()) {
 		if (left_toggles > 0) {
-			turn_toggle_tick = HAL_GetTick() + 1000; //time of blinking
+			turn_toggle_tick = HAL_GetTick() + 1000; //time of blinking (2Hz)
 			HAL_GPIO_TogglePin(LL_GPIO_Port, LL_Pin);
 			left_toggles--;
 		} else {
@@ -106,6 +113,7 @@ void turn_signal_left(void)
 	}
 }
 
+//LED setting for right turn signal (time and function depending on conditions)
 void turn_signal_right(void)
 	{
 		static uint32_t turn_toggle_tick = 0;
@@ -171,14 +179,19 @@ int main(void)
 		  } else{
 			  HAL_UART_Transmit(&huart2,"Blinking 3 times\r\n", 17, 50);
 		  }
-	   }else if (left_on == 0){
+	   } else if (left_on == 0){
 		  left_toggles = 0;
 		  }
 
 	  if (right_on == 1){
 		  HAL_UART_Transmit(&huart2,"Right Turn Signal On\r\n", 22, 50);
 		  turn_signal_right();
-	   }else if (right_on == 0){
+		  if (right_toggles == 0xFFFFFF){
+			  HAL_UART_Transmit(&huart2,"Blinking infinitely\r\n",21,50);
+		  } else{
+			  HAL_UART_Transmit(&huart2,"Blinking 3 times\r\n",17,50);
+		  }
+	   } else if (right_on == 0){
      	  right_toggles = 0;
       }
 
