@@ -43,7 +43,15 @@
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-
+//variables to setting number of blinks
+uint32_t left_toggles = 0;
+uint32_t right_toggles = 0;
+// variables to let every function work
+uint32_t left_on = 0;
+uint32_t right_on = 0;
+//variables to save last register of press buttons.
+uint32_t left_last_press_tick = 0;
+uint32_t right_last_press_tick = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -56,7 +64,32 @@ static void MX_USART2_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+	//turn left button settings
+	if (GPIO_Pin == B1_Pin) {
+		left_on = 1 ;
+		left_toggles = 6; // Blink 3 times
+		} else if (GPIO_Pin == B2_Pin) {
+			left_on = 0;
+			left_toggles = 0;
+	}
+}
 
+void turn_signal_left(void)
+{
+	static uint32_t turn_toggle_tick = 0;
+	if (turn_toggle_tick < HAL_GetTick()) {
+		if (left_toggles > 0) {
+			turn_toggle_tick = HAL_GetTick() + 1000; //time of blinking
+			HAL_GPIO_TogglePin(LL_GPIO_Port, LL_Pin);
+			left_toggles--;
+		} else {
+			HAL_GPIO_WritePin(LL_GPIO_Port, LL_Pin, 1);
+		}
+
+	}
+}
 /* USER CODE END 0 */
 
 /**
@@ -100,6 +133,10 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  if (left_on == 1){
+		  HAL_UART_Transmit(&huart2, "Left Turn Signal On\r\n", 21, 30);
+	      turn_signal_left();
+	  }
   }
   /* USER CODE END 3 */
 }
